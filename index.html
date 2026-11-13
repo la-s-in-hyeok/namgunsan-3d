@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="application-name" content="namgunsan-3d-explorer">
+    <meta name="theme-color" content="#182822">
+    <meta name="description" content="남군산교회를 직접 걸어보는 3D 자유 탐험 시제품">
+    <title>남군산교회 · 3D 자유 탐험</title>
+    <link rel="icon" type="image/svg+xml" href="./church.svg">
+    <script type="module" crossorigin src="./assets/index-BPxeuvyO.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-YfVc_-CF.css">
+  </head>
+  <body>
+    <main id="app" aria-label="남군산교회 3D 탐험">
+      <canvas id="view" tabindex="0" aria-label="3D 탐험 공간"></canvas>
+      <div class="hud">
+        <header class="hud-top">
+          <div class="identity panel">
+            <img class="mark" src="./church.svg" alt="" width="37" height="37">
+            <div>
+              <h1>남군산교회</h1>
+              <p>3D 자유 탐험 <span>시제품</span></p>
+            </div>
+          </div>
+          <button id="clock" type="button" class="clock" hidden aria-haspopup="true" aria-expanded="false" aria-controls="clock-menu">
+            <span id="clock-text">&nbsp;</span>
+          </button>
+          <div class="location panel" aria-live="polite" aria-atomic="true">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 17s5.2-4.1 5.2-8.5a5.2 5.2 0 0 0-10.4 0C4.8 12.9 10 17 10 17Z" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="8.1" r="1.7" stroke="currentColor" stroke-width="1.4"/></svg>
+            <div class="place">
+              <strong id="location">비전센터 북측</strong>
+              <small id="evidence">현장 자료 기준</small>
+            </div>
+            <output id="view-mode">1인칭</output>
+            <button id="place-help" type="button" class="place-help" hidden aria-label="이 장소 설명 보기">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.6 7.7a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1.1.9-1.1 1.6v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.9" r="1" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="hud-bottom">
+          <div class="keyboard panel" aria-label="조작 안내">
+            <span class="keys walk-only"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="walk-only">이동</span>
+            <span class="rule walk-only"></span><span class="look-hint walk-only">드래그 시점</span>
+            <span class="orbit-only">끌어서 이동</span>
+            <span class="rule"></span><span>휠 확대·축소</span>
+          </div>
+          <div class="touch-controls">
+            <div id="joystick" aria-label="이동 조이스틱">
+              <i class="tick north"></i><i class="tick east"></i><i class="tick south"></i><i class="tick west"></i>
+              <span id="thumb"></span>
+            </div>
+            <span class="touch-label">밀어서 이동</span>
+          </div>
+          <div class="utility">
+            <div class="tour-actions">
+              <select id="camera-mode" class="panel" aria-label="걷기 시점">
+                <option value="first">1인칭으로 걷기</option>
+                <option value="third">3인칭으로 걷기</option>
+              </select>
+              <button id="artwork-open" type="button" class="panel" aria-haspopup="dialog">안내판 이미지</button>
+            </div>
+            <output id="direction" class="panel direction"></output>
+            <button id="reset" type="button" class="panel" aria-label="시작점으로 돌아가기">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4.3 9.4a5.9 5.9 0 1 1 1.3 4.7M4.3 9.4v-4m0 4h4" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              시작점
+            </button>
+            <div class="touch-help">드래그 시점 · 핀치 확대·축소</div>
+            <nav id="dock" class="dock" hidden aria-label="메뉴">
+              <button type="button" class="dock-item" data-menu="find" aria-haspopup="true" aria-expanded="false" aria-controls="menu-find">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l3.8 3.8"/></svg><span>찾기</span>
+              </button>
+              <button type="button" class="dock-item" data-menu="explore" aria-haspopup="true" aria-expanded="false" aria-controls="menu-explore">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M13 7l-1.8 4.2L7 13l1.8-4.2z"/></svg><span>둘러보기</span>
+              </button>
+              <button type="button" class="dock-item" data-menu="church" aria-haspopup="true" aria-expanded="false" aria-controls="menu-church">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4v4.1M8.1 4.3h3.8M4.5 17.3V10L10 6.6l5.5 3.4v7.3M8.3 17.3v-3a1.7 1.7 0 0 1 3.4 0v3M2.8 17.3h14.4"/></svg><span>교회 소개</span>
+              </button>
+              <button type="button" class="dock-item" data-menu="help" aria-haspopup="true" aria-expanded="false" aria-controls="menu-help">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M7.9 8a2.2 2.2 0 1 1 3 2c-.6.3-.9.7-.9 1.3v.3"/><path d="M10 14.2v.1"/></svg><span>도움말</span>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <div id="ui-rail" class="ui-rail" aria-label="층 선택 자리"></div>
+
+      <div id="menus" class="menus">
+        <section id="menu-find" class="menu" data-menu="find" hidden aria-label="찾기">
+          <h3>찾기</h3>
+          <button type="button" class="menu-item" data-action="search"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l3.8 3.8"/></svg><span><strong>장소 검색</strong><small>화장실, 식당처럼 익숙한 말로 찾기</small></span></button>
+          <button type="button" class="menu-item" data-action="guide"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="5.5" cy="15" r="1.8"/><path d="M14.5 9.6s3-2.4 3-4.8a3 3 0 0 0-6 0c0 2.4 3 4.8 3 4.8zM7.3 15h4.2a2.4 2.4 0 0 0 0-4.8H9.6a2.2 2.2 0 0 1 0-4.4h1"/></svg><span><strong>길안내</strong><small>비전센터·주교관에서 갈 곳 고르기</small></span></button>
+          <button type="button" class="menu-item" data-action="parking"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="3.5" width="13" height="13" rx="3"/><path d="M8.2 14V6.6h2.5a2.2 2.2 0 0 1 0 4.4H8.2"/></svg><span><strong>주차 안내</strong><small>제1·2·3주차장 차례로 보기</small></span></button>
+        </section>
+        <section id="menu-explore" class="menu" data-menu="explore" hidden aria-label="둘러보기">
+          <h3>둘러보기</h3>
+          <button type="button" class="menu-item" data-action="tour"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.8" width="14" height="10.4" rx="2.6"/><path d="M8.6 7.8v4.4l3.6-2.2z"/></svg><span><strong>교회 둘러보기</strong><small>영상처럼 장소를 차례로</small></span></button>
+          <button type="button" class="menu-item" data-action="floors"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.4l7 3.6-7 3.6L3 7z"/><path d="M3 10.4l7 3.6 7-3.6M3 13.6l7 3.6 7-3.6"/></svg><span><strong>층별 보기</strong><small>한 층 전체를 위에서</small></span></button>
+          <button type="button" class="menu-item" data-action="overview"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 7.5v-4h4M12.5 3.5h4v4M16.5 12.5v4h-4M7.5 16.5h-4v-4"/></svg><span><strong>전체 보기</strong><small>두 건물을 한 화면에</small></span></button>
+          <button type="button" class="menu-item" data-action="map2d"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.6l4.6-2 4.8 2 4.6-2v10.8l-4.6 2-4.8-2-4.6 2z"/><path d="M7.6 3.6v10.8M12.4 5.6v10.8"/></svg><span><strong>2D 지도</strong><small>층별 평면도와 이동 카드</small></span></button>
+        </section>
+        <section id="menu-church" class="menu menu-wide" data-menu="church" hidden aria-label="교회 소개">
+          <h3>교회 소개</h3>
+          <button type="button" class="menu-item" data-action="info" data-section="purpose"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.2 3.5h8.6a1.8 1.8 0 0 1 1.8 1.8v11.2H7a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M8.3 7.6h4.4M8.3 10.6h4.4"/></svg><span><strong>목적문</strong></span></button>
+          <button type="button" class="menu-item" data-action="info" data-section="abraham"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3l1.9 4.2 4.6.5-3.4 3.1 1 4.5L10 13l-4.1 2.3 1-4.5-3.4-3.1 4.6-.5z"/></svg><span><strong>아브라함의 복</strong></span></button>
+          <button type="button" class="menu-item" data-action="info" data-section="vision"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.6"/><circle cx="10" cy="10" r="3"/><path d="M10 10h.01"/></svg><span><strong>2030 VISION</strong></span></button>
+          <button type="button" class="menu-item" data-action="info" data-section="news"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 8.2v3.6h2.6l6.4 3.7V4.5L6.1 8.2z"/><path d="M15 7.4a3.6 3.6 0 0 1 0 5.2"/></svg><span><strong>이번 주 광고</strong></span></button>
+          <button type="button" class="menu-item" data-action="info" data-section="worship"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.2l2.8 1.8"/></svg><span><strong>예배·교육 시간</strong></span></button>
+          <a class="menu-item" data-link="homepage" href="https://www.namgunsan.com/" target="_blank" rel="noopener"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c1.9 2 2.8 4.4 2.8 7s-.9 5-2.8 7c-1.9-2-2.8-4.4-2.8-7s.9-5 2.8-7z"/></svg><span><strong>홈페이지</strong><small>www.namgunsan.com</small></span></a>
+          <a class="menu-item" data-link="youtube" href="https://www.youtube.com/channel/UCmaWYVhlo4ApZvTm-VPPrZA" target="_blank" rel="noopener"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.8" y="5" width="14.4" height="10" rx="3"/><path d="M8.7 7.8v4.4l3.7-2.2z"/></svg><span><strong>유튜브</strong><small>남군산미디어교회</small></span></a>
+          <div class="menu-slot" data-slot="artwork"></div>
+        </section>
+        <section id="menu-help" class="menu" data-menu="help" hidden aria-label="도움말">
+          <h3>도움말</h3>
+          <button type="button" class="menu-item" data-action="tutorial"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.6 14.6h4.8M8.4 17.2h3.2M10 2.8a4.7 4.7 0 0 0-2.8 8.5c.5.4.8.9.8 1.5v.4h4v-.4c0-.6.3-1.1.8-1.5A4.7 4.7 0 0 0 10 2.8z"/></svg><span><strong>기능 안내</strong><small>버튼을 하나씩 짚어 보기</small></span></button>
+          <button type="button" class="menu-item" data-action="welcome"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.4L10 4l6.5 5.4v7.1h-13z"/><path d="M8 16.5v-4h4v4"/></svg><span><strong>처음 화면</strong><small>환영 화면 다시 보기</small></span></button>
+          <dl class="menu-keys pointer-fine">
+            <div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>이동</dd></div>
+            <div><dt>클릭</dt><dd>마우스로 시점 돌리기</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>메뉴 보기</dd></div>
+            <div><dt>끌기</dt><dd>층별·전체 보기 이동</dd></div>
+            <div><dt>휠</dt><dd>확대·축소</dd></div>
+          </dl>
+          <dl class="menu-keys pointer-coarse">
+            <div><dt>조이스틱</dt><dd>밀어서 이동</dd></div>
+            <div><dt>끌기</dt><dd>시점 돌리기</dd></div>
+            <div><dt>두 손가락</dt><dd>확대·축소</dd></div>
+          </dl>
+        </section>
+        <section id="clock-menu" class="menu menu-clock" hidden aria-label="빛 설정">
+          <h3>화면 빛</h3>
+          <button type="button" class="menu-item" data-time="live" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4.2l2.8 1.8"/></svg><span><strong>실시간 빛</strong><small>지금 시각과 계절에 맞춰</small></span></button>
+          <button type="button" class="menu-item" data-time="day" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.4"/><path d="M10 2.6v2M10 15.4v2M2.6 10h2M15.4 10h2M4.8 4.8l1.4 1.4M13.8 13.8l1.4 1.4M4.8 15.2l1.4-1.4M13.8 6.2l1.4-1.4"/></svg><span><strong>낮 화면으로 보기</strong><small>밤에도 밝게</small></span></button>
+        </section>
+      </div>
+
+      <div class="crosshair" aria-hidden="true"></div>
+      <div class="lock-hint" aria-hidden="true"><kbd>Esc</kbd><span>를 누르면 길찾기와 메뉴가 열려요</span></div>
+
+      <div id="lift-controls" class="panel lift-controls" hidden aria-label="엘리베이터 층 선택">
+        <output id="lift-status" aria-live="polite"></output>
+        <div><button type="button" data-floor="0">1층 · 식당</button><button type="button" data-floor="1">2층 · 로비</button><button type="button" data-floor="2">3층 · 본당</button><button type="button" data-floor="3">4층 · 중층예배실</button></div>
+      </div>
+      <div id="loading" class="state" role="status">
+        <img src="./church.svg" alt="" width="52" height="52">
+        <p>탐험 공간을 준비하고 있습니다</p>
+      </div>
+      <div id="error" class="state" role="alert" hidden></div>
+      <div class="rotate state" role="status">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="13" y="12" width="23" height="39" rx="5" transform="rotate(-20 13 12)" stroke="currentColor" stroke-width="2.6"/><path d="M48 20c6.8 5.4 8.6 13.9 4.8 21M45.7 37.7l6.5 4.3 4.7-6.7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2>가로로 돌려 주세요</h2>
+        <p>가로 화면에서 남군산교회를 탐험할 수 있어요.</p>
+        <p id="rotate-next" class="rotate-next" role="status" hidden></p>
+        <div class="rotate-actions" hidden>
+          <button id="rotate-map" type="button" class="ui-button">2D 지도로 보기</button>
+          <button id="rotate-info" type="button" class="ui-button ui-button-quiet">교회 소개</button>
+        </div>
+      </div>
+
+      <section id="welcome" class="welcome" hidden aria-labelledby="welcome-title">
+        <div class="welcome-card">
+          <img class="welcome-mark" src="./church.svg" alt="" width="46" height="46">
+          <p class="welcome-kicker">welcome</p>
+          <h2 id="welcome-title">남군산교회에 오신 것을 환영합니다</h2>
+          <p class="welcome-body">꿈과 행복이 있는 남군산교회에 오신 여러분을 진심으로 환영합니다.</p>
+          <div class="welcome-actions">
+            <button type="button" class="welcome-action" data-welcome="sanctuary">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.4v4.1M8.1 4.3h3.8M4.5 17.3V10L10 6.6l5.5 3.4v7.3M8.3 17.3v-3a1.7 1.7 0 0 1 3.4 0v3M2.8 17.3h14.4"/></svg>
+              <span><strong>예배당 찾기</strong><small>아브라함홀 (대예배실) · 본당</small></span>
+            </button>
+            <button type="button" class="welcome-action" data-welcome="search">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l3.8 3.8"/></svg>
+              <span><strong>장소 찾기</strong><small>화장실, 식당처럼 익숙한 말로</small></span>
+            </button>
+            <button type="button" class="welcome-action" data-welcome="tour">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.8" width="14" height="10.4" rx="2.6"/><path d="M8.6 7.8v4.4l3.6-2.2z"/></svg>
+              <span><strong>교회 둘러보기</strong><small>영상처럼 장소를 차례로</small></span>
+            </button>
+          </div>
+          <div class="welcome-more">
+            <button type="button" data-welcome="worship">예배 시간</button>
+            <button type="button" data-welcome="map2d">2D 지도로 보기</button>
+            <button type="button" data-welcome="tutorial">기능 안내</button>
+            <button type="button" data-welcome="walk">직접 걸어 보기</button>
+          </div>
+          <p class="welcome-motto">AND 2026 날마다 더하게 하소서! <span>사도행전 2:46-47</span></p>
+        </div>
+      </section>
+      <noscript><div class="state">탐험하려면 브라우저에서 JavaScript를 켜 주세요.</div></noscript>
+    </main>
+    <dialog id="artwork-dialog" class="artwork-dialog" aria-labelledby="artwork-title">
+      <form method="dialog" class="dialog-heading">
+        <h2 id="artwork-title">안내판 이미지</h2>
+        <button type="submit" class="panel">닫기</button>
+      </form>
+      <p>바꿀 안내판을 고른 뒤 JPG, PNG 또는 WebP 이미지를 넣으세요.</p>
+      <label class="artwork-label" for="artwork-slot">안내판 위치</label>
+      <select id="artwork-slot"></select>
+      <div class="artwork-sample"><canvas id="artwork-preview" aria-label="안내판 이미지 미리보기"></canvas></div>
+      <label class="artwork-label" for="artwork-file">이미지 파일</label>
+      <input id="artwork-file" type="file" accept="image/jpeg,image/png,image/webp">
+      <div class="artwork-footer">
+        <button id="artwork-clear" type="button" class="panel">기본으로</button>
+        <output id="artwork-status" role="status"></output>
+      </div>
+    </dialog>
+  </body>
+</html>
