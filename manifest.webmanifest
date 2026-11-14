@@ -1,0 +1,19 @@
+{
+  "name": "남군산교회 3D 안내",
+  "short_name": "남군산교회",
+  "description": "남군산교회를 직접 걸어보는 3D 안내",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#182822",
+  "theme_color": "#182822",
+  "icons": [
+    { "src": "church.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "church-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "church-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "church-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
